@@ -11,7 +11,7 @@ var svg1 = d3
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-//TODO: append svg object to the body of the page to house Scatterplot 2
+//TODO: Append svg object to the body of the page to house Scatterplot 2
 
 var svg2 = d3
     .select("#dataviz_brushScatter")
@@ -21,7 +21,15 @@ var svg2 = d3
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-//TODO: append svg object to the body of the page to house Bar chart 
+//TODO: append svg object to the body of the page to house Bar chart
+
+var svg3 = d3
+    .select("#dataviz_brushScatter")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Define color scale
 var color = d3
@@ -164,6 +172,10 @@ d3.csv("data/iris.csv").then((data) => {
             })
             .style("opacity", 0.5);
 
+        //TODO: Define a brush
+
+        //TODO: Add brush to the svg
+
     }
 
 
@@ -171,6 +183,83 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Barchart with counts of different species
 
+    {
+        //Set x,y Scales for the bar chart
+    let x = d3.scaleBand().range([0, width]).padding(0.13),
+        y = d3.scaleLinear().range([height, 0]);
+
+        //To Confirm the data is being loaded from CSV correctly
+        console.log(data)
+
+        //Mapping Discrete X Values to the domain for X Axis
+        x.domain(data.map(function(d) { return d.Species; }));
+        //Mapping Y Values from 0 to the max Y value + 10
+        y.domain([0, 50]);
+
+        //https://www.educative.io/blog/d3-js-tutorial-bar-chart
+
+
+        //Convert Species Data into {Specie, SpecieCount} Format. Similar to X,Y data format from IC4
+        var speciesList = data.map(function(d) { return d.Species; })
+        var setosa = 0
+        var versicolor= 0
+        var virginica = 0;
+        speciesList.forEach(function (item) {
+            if(item === "setosa") {
+                setosa++;
+            }
+            else if(item === "virginica") {
+                virginica++;
+
+            }
+            else{
+
+                versicolor++;
+            }
+        });
+
+        var speciesCount = [setosa, versicolor, virginica]
+
+        var speciesData = [
+            {"Specie" : "setosa",
+            "SpecieCount" : speciesCount[0]},
+            {"Specie" : "versicolor",
+                "SpecieCount" : speciesCount[1]},
+            {"Specie" : "virginica",
+                "SpecieCount" : speciesCount[2]}]
+
+
+                            console.log(speciesData)
+
+        //Create the Bar Chart with speciesData
+        svg3.selectAll(".bar")
+            .data(speciesData)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.Specie) })
+            .attr("width", x.bandwidth())
+            .attr("y", function(d) { return y(d.SpecieCount); })
+            .attr("height", function(d) { return height - y(d.SpecieCount)})
+            //Code from https://stackoverflow.com/questions/37585131/how-to-set-color-gradient-in-barchart-using-d3-js
+            .attr("fill", function(d,i){
+                return color(i);
+            })
+
+    //Append the x-axis to the SVG
+    svg3.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    //Append the y-axis to the SVG
+    svg3.append("g")
+        .call(d3.axisLeft(y));
+
+
+        //TODO: Define a brush
+
+        //TODO: Add brush to the svg
+
+    }
   //Brushing Code---------------------------------------------------------------------------------------------
     
   //Removes existing brushes from svg
