@@ -277,10 +277,8 @@ d3.csv("data/iris.csv").then((data) => {
         extent = brushEvent.selection;
     
         //TODO: Check all the circles that are within the brush region in Scatterplot 1
-
-        myCircle1.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
-    
-        //TODO: Select all the data points in Scatterplot 2 which have the same id as those selected in Scatterplot 1
+        //Resource for code below: https://www.d3-graph-gallery.com/graph/interactivity_brush.html
+        myCircle1.classed("selected", function(d){ return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length) ) } )
 
         function isBrushed(brush_coords, cx, cy) {
             var x0 = brush_coords[0][0],
@@ -289,6 +287,10 @@ d3.csv("data/iris.csv").then((data) => {
                 y1 = brush_coords[1][1];
             return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
         }
+    
+        //TODO: Select all the data points in Scatterplot 2 which have the same id as those selected in Scatterplot 1
+
+        myCircle2.classed('selected', function(d){ return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length));});
 
 
     }
