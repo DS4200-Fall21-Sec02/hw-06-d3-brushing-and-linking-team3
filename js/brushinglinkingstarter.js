@@ -104,7 +104,14 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Define a brush
 
+      var brush1 =
+          d3.brush()                 // Add the brush feature using the d3.brush function
+              .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+              .on("start brush", updateChart1 // Each time the brush selection changes, trigger the 'updateChart' function
+          )
+
     //TODO: Add brush to the svg
+    svg1.call(brush1)
     
   }
 
@@ -255,9 +262,6 @@ d3.csv("data/iris.csv").then((data) => {
         .call(d3.axisLeft(y));
 
 
-        //TODO: Define a brush
-
-        //TODO: Add brush to the svg
 
     }
   //Brushing Code---------------------------------------------------------------------------------------------
@@ -273,10 +277,20 @@ d3.csv("data/iris.csv").then((data) => {
         extent = brushEvent.selection;
     
         //TODO: Check all the circles that are within the brush region in Scatterplot 1
- 
+
+        myCircle1.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
     
         //TODO: Select all the data points in Scatterplot 2 which have the same id as those selected in Scatterplot 1
-      
+
+        function isBrushed(brush_coords, cx, cy) {
+            var x0 = brush_coords[0][0],
+                x1 = brush_coords[1][0],
+                y0 = brush_coords[0][1],
+                y1 = brush_coords[1][1];
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
+        }
+
+
     }
 
     //Is called when we brush on scatterplot #2
@@ -303,3 +317,5 @@ d3.csv("data/iris.csv").then((data) => {
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1; // This return TRUE or FALSE depending on if the points is in the selected area
     }
 });
+
+
