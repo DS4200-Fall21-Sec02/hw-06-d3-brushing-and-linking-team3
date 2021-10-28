@@ -244,7 +244,7 @@ d3.csv("data/iris.csv").then((data) => {
                             console.log(speciesData)
 
         //Create the Bar Chart with speciesData
-        svg3.selectAll(".bar")
+        var myBarChart1 = svg3.selectAll(".bar")
             .data(speciesData)
             .enter().append("rect")
             .attr("class", "bar")
@@ -285,13 +285,6 @@ d3.csv("data/iris.csv").then((data) => {
         //Resource for code below: https://www.d3-graph-gallery.com/graph/interactivity_brush.html
         myCircle1.classed("selected", function(d){ return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length) ) } )
 
-        function isBrushed(brush_coords, cx, cy) {
-            var x0 = brush_coords[0][0],
-                x1 = brush_coords[1][0],
-                y0 = brush_coords[0][1],
-                y1 = brush_coords[1][1];
-            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
-        }
     
         //TODO: Select all the data points in Scatterplot 2 which have the same id as those selected in Scatterplot 1
 
@@ -307,15 +300,7 @@ d3.csv("data/iris.csv").then((data) => {
 
       //TODO: Check all the circles that are within the brush region in Scatterplot 2
         myCircle2.classed("selected", function(d){ return isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width) ) } )
-
-        function isBrushed(brush_coords, cx, cy) {
-            var x0 = brush_coords[0][0],
-                x1 = brush_coords[1][0],
-                y0 = brush_coords[0][1],
-                y1 = brush_coords[1][1];
-            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
-        }
-
+        myCircle1.classed("selected", function(d){ return addSpecie(d)} )
 
       //TODO: Select all the data points in Scatterplot 1 which have the same id as those selected in Scatterplot 2
 
@@ -323,6 +308,16 @@ d3.csv("data/iris.csv").then((data) => {
 
       //TODO: Select bars in bar chart based on species selected in Scatterplot 2
 
+
+        //
+        function addSpecie(d) {
+            if(isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width))) {
+            selectedSpecies.add(d.Species)
+            console.log(selectedSpecies)
+        }
+        }
+
+        myBarChart1.classed('selected', function(d){ return selectedSpecies.has(d.Specie)})
 
 
     }
