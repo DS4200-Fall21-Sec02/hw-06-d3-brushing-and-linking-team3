@@ -180,9 +180,14 @@ d3.csv("data/iris.csv").then((data) => {
             .style("opacity", 0.5);
 
         //TODO: Define a brush
+        var brush2 =
+            d3.brush()                 // Add the brush feature using the d3.brush function
+                .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+                .on("start brush", updateChart2 // Each time the brush selection changes, trigger the 'updateChart' function
+                )
 
         //TODO: Add brush to the svg
-
+        svg2.call(brush2)
     }
 
 
@@ -290,7 +295,7 @@ d3.csv("data/iris.csv").then((data) => {
     
         //TODO: Select all the data points in Scatterplot 2 which have the same id as those selected in Scatterplot 1
 
-        myCircle2.classed('selected', function(d){ return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length));});
+        myCircle2.classed('selected', function(d){ return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length) ) } )
 
 
     }
@@ -301,10 +306,24 @@ d3.csv("data/iris.csv").then((data) => {
       var selectedSpecies = new Set();
 
       //TODO: Check all the circles that are within the brush region in Scatterplot 2
+        myCircle2.classed("selected", function(d){ return isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width) ) } )
+
+        function isBrushed(brush_coords, cx, cy) {
+            var x0 = brush_coords[0][0],
+                x1 = brush_coords[1][0],
+                y0 = brush_coords[0][1],
+                y1 = brush_coords[1][1];
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
+        }
+
 
       //TODO: Select all the data points in Scatterplot 1 which have the same id as those selected in Scatterplot 2
 
+        myCircle1.classed('selected', function(d){ return isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width) ) } )
+
       //TODO: Select bars in bar chart based on species selected in Scatterplot 2
+
+
 
     }
 
